@@ -57,7 +57,6 @@ public class Books extends HttpServlet {
 				response.getWriter().println("[");
 				for (Entity responseEntity : bookEntities) {
 					ResponseBookData responseBookData = new ResponseBookData();
-					responseBookData.setBookId(responseEntity.getProperty("bookID").toString());
 					responseBookData.setTitle(responseEntity.getProperty("Title").toString());
 					responseBookData.setAuthor(responseEntity.getProperty("Author").toString());
 					responseBookData.setCountry(responseEntity.getProperty("Country").toString());
@@ -91,7 +90,6 @@ public class Books extends HttpServlet {
 				Key bookKey = KeyFactory.createKey("Books", bookKeyComponent);
 				Entity responseEntity = datastore.get(bookKey);
 				ResponseBookData responseBookData = new ResponseBookData();
-				responseBookData.setBookId(responseEntity.getProperty("bookID").toString());
 				responseBookData.setTitle(responseEntity.getProperty("Title").toString());
 				responseBookData.setAuthor(responseEntity.getProperty("Author").toString());
 				responseBookData.setCountry(responseEntity.getProperty("Country").toString());
@@ -123,9 +121,9 @@ public class Books extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/**
 		 * Processing the request data as a stream using BufferedReader() and building a
-		 * string using the StringBuilder().
+		 * string using the StringBuffer().
 		 */
-		StringBuilder jsonstring = new StringBuilder();
+		StringBuffer jsonstring = new StringBuffer();
 		String line = null;
 		BufferedReader reader = request.getReader();
 		while ((line = reader.readLine()) != null) {
@@ -139,7 +137,6 @@ public class Books extends HttpServlet {
 		 * @line47 Deserializing the JSON data into BookData POJO.
 		 * 
 		 */
-//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		RequestBookData requestBookData = (RequestBookData) gson.fromJson(jsonstring.toString(), RequestBookData.class);
 
 		try {
@@ -193,9 +190,7 @@ public class Books extends HttpServlet {
 			 * Constructing an Entity out of the data received post validation.
 			 */
 			String bookID = UUID.randomUUID().toString();
-			requestBookData.setBookId(bookID);
 			Entity entity = new Entity("Books", bookID);
-			entity.setProperty("bookID", requestBookData.getBookId());
 			entity.setProperty("Title", requestBookData.getTitle());
 			entity.setProperty("Author", requestBookData.getAuthor());
 			entity.setProperty("Country", requestBookData.getCountry());
@@ -217,7 +212,6 @@ public class Books extends HttpServlet {
 			 */
 			Entity responseEntity = datastore.get(obj);
 			ResponseBookData responseBookData = new ResponseBookData();
-			responseBookData.setBookId(responseEntity.getProperty("bookID").toString());
 			responseBookData.setTitle(responseEntity.getProperty("Title").toString());
 			responseBookData.setAuthor(responseEntity.getProperty("Author").toString());
 			responseBookData.setCountry(responseEntity.getProperty("Country").toString());
@@ -249,9 +243,9 @@ public class Books extends HttpServlet {
 
 		/**
 		 * Processing the request data as a stream using BufferedReader() and building a
-		 * string using the StringBuilder().
+		 * string using the StringBuffer().
 		 */
-		StringBuilder jsonstring = new StringBuilder();
+		StringBuffer jsonstring = new StringBuffer();
 		String line = null;
 		BufferedReader reader = request.getReader();
 		while ((line = reader.readLine()) != null) {
@@ -265,7 +259,6 @@ public class Books extends HttpServlet {
 		 * @line47 Deserializing the JSON data into BookData POJO.
 		 * 
 		 */
-//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		RequestBookData requestBookData = (RequestBookData) gson.fromJson(jsonstring.toString(), RequestBookData.class);
 		try {
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -277,7 +270,6 @@ public class Books extends HttpServlet {
 			String requestUri = request.getRequestURI();
 			String[] requestsArray = requestUri.split("/");
 			String bookKeyComponent = requestsArray[requestsArray.length - 1];
-			requestBookData.setBookId(bookKeyComponent);
 
 			/**
 			 * Validating the data after creating the POJO before updating it into the
@@ -326,7 +318,6 @@ public class Books extends HttpServlet {
 			 * Constructing an Entity out of the data received.
 			 */
 			Entity entity = new Entity("Books", bookKeyComponent);
-			entity.setProperty("bookID", requestBookData.getBookId());
 			entity.setProperty("Title", requestBookData.getTitle());
 			entity.setProperty("Author", requestBookData.getAuthor());
 			entity.setProperty("Country", requestBookData.getCountry());
@@ -348,7 +339,6 @@ public class Books extends HttpServlet {
 			 */
 			Entity responseEntity = datastore.get(obj);
 			ResponseBookData responseBookData = new ResponseBookData();
-			responseBookData.setBookId(responseEntity.getProperty("bookID").toString());
 			responseBookData.setTitle(responseEntity.getProperty("Title").toString());
 			responseBookData.setAuthor(responseEntity.getProperty("Author").toString());
 			responseBookData.setCountry(responseEntity.getProperty("Country").toString());

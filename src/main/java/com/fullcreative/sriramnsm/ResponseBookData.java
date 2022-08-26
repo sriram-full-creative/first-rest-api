@@ -3,8 +3,6 @@ package com.fullcreative.sriramnsm;
 import com.google.gson.annotations.Expose;
 
 public class ResponseBookData {
-	@Expose(serialize = false, deserialize = false)
-	private String bookId;
 	@Expose(serialize = true, deserialize = true)
 	private String author;
 	@Expose(serialize = true, deserialize = true)
@@ -87,14 +85,6 @@ public class ResponseBookData {
 
 	public void setYear(int year) {
 		this.year = year;
-	}
-
-	public String getBookId() {
-		return bookId;
-	}
-
-	public void setBookId(String bookId) {
-		this.bookId = bookId;
 	}
 
 	@Override
