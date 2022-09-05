@@ -19,8 +19,8 @@ import com.google.gson.JsonObject;
 public class BooksServletUtilities {
 
 
-	public static ResponseBookData bookFromEntity(Entity entity) {
-		ResponseBookData bookData = new ResponseBookData();
+	public static BookData bookFromEntity(Entity entity) {
+		BookData bookData = new BookData();
 		bookData.setTitle(entity.getProperty("Title").toString());
 		bookData.setAuthor(entity.getProperty("Author").toString());
 		bookData.setCountry(entity.getProperty("Country").toString());
@@ -33,15 +33,15 @@ public class BooksServletUtilities {
 	}
 
 
-	public static List<ResponseBookData> booksFromEntities(List<Entity> entities) {
-		List<ResponseBookData> books = new ArrayList<>();
+	public static List<BookData> booksFromEntities(List<Entity> entities) {
+		List<BookData> books = new ArrayList<>();
 		for (Entity entity : entities) {
 			books.add(bookFromEntity(entity));
 		}
 		return books;
 	}
 
-	public static Entity entityFromBook(RequestBookData requestBookData, String bookKeyComponent) {
+	public static Entity entityFromBook(BookData requestBookData, String bookKeyComponent) {
 		Entity entity = new Entity("Books", bookKeyComponent);
 		entity.setProperty("Title", requestBookData.getTitle());
 		entity.setProperty("Author", requestBookData.getAuthor());
@@ -59,7 +59,7 @@ public class BooksServletUtilities {
 		return requestsArray;
 	}
 
-	public static RequestBookData requestBookDataFromRequestBody(HttpServletRequest request) throws IOException {
+	public static BookData requestBookDataFromRequestBody(HttpServletRequest request) throws IOException {
 		StringBuffer jsonstring = new StringBuffer();
 		String line = null;
 		BufferedReader reader = request.getReader();
@@ -68,11 +68,11 @@ public class BooksServletUtilities {
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
-		RequestBookData requestBookData = (RequestBookData) gson.fromJson(jsonstring.toString(), RequestBookData.class);
+		BookData requestBookData = (BookData) gson.fromJson(jsonstring.toString(), BookData.class);
 		return requestBookData;
 	}
 
-	public static Map<Integer, JsonObject> requestValidator(RequestBookData requestBookData) {
+	public static Map<Integer, JsonObject> requestValidator(BookData requestBookData) {
 		Map<Integer, JsonObject> validation = new HashMap<>();
 		JsonObject jsonErrorString = new JsonObject();
 		Integer errorFlag = 0;

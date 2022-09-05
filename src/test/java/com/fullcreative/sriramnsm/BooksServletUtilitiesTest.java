@@ -22,7 +22,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertEquals(null, validation.get(1));
 	}
@@ -33,7 +33,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"imageLink\": \"images/the-divine-comedy.jpg\",\r\n" + "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"AUTHOR_NAME_ERROR\":\"Author Name should contain atleast 1 character\"}",
@@ -47,7 +47,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"TITLE_NAME_ERROR\":\"Title Name should contain atleast 1 character\"}",
@@ -61,7 +61,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": -928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"PAGES_ERROR\":\"Page Count should be Positive\"}",
@@ -75,7 +75,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 19,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"PAGES_ERROR\":\"Book should have atleast 20 pages\"}",
@@ -89,7 +89,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": -1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"YEAR_NEGATIVE_VALUE_ERROR\":\"Year should be positive\"}",
@@ -103,7 +103,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 2024\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals(
@@ -117,7 +117,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"imageLink\": \"images/the-divine-comedy.jpg\",\r\n" + "    \"language\": \"Italian\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"COUNTRY_FIELD_ERROR\":\"Country field can't be empty and should atleast have 3 characters\"}",
@@ -131,7 +131,7 @@ public class BooksServletUtilitiesTest {
 				+ "    \"language\": \"\",\r\n"
 				+ "    \"link\": \"https://en.wikipedia.org/wiki/Divine_Comedy\\n\",\r\n" + "    \"pages\": 928,\r\n"
 				+ "    \"title\": \"The Divine Comedy\",\r\n" + "    \"year\": 1315\r\n" + "  }";
-		RequestBookData book = gson.fromJson(jsonBookString, RequestBookData.class);
+		BookData book = gson.fromJson(jsonBookString, BookData.class);
 		Map<Integer, JsonObject> validation = BooksServletUtilities.requestValidator(book);
 		assertNotNull(validation.get(1));
 		assertEquals("{\"LANGUAGE_EMPTY_ERROR\":\"Language field can't be empty\"}",

@@ -49,7 +49,7 @@ public class BooksServlet extends HttpServlet {
 			if (requestList.size() == 2) {
 				Query query = new Query();
 				List<Entity> bookEntities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
-				List<ResponseBookData> books = BooksServletUtilities.booksFromEntities(bookEntities);
+				List<BookData> books = BooksServletUtilities.booksFromEntities(bookEntities);
 				response.getWriter().println(gson.toJson(books));
 			} else if (requestList.size() == 3) {
 
@@ -60,7 +60,7 @@ public class BooksServlet extends HttpServlet {
 				 */
 				Key bookKey = KeyFactory.createKey("Books", bookKeyComponent);
 				Entity responseEntity = datastore.get(bookKey);
-				ResponseBookData responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
+				BookData responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
 				/**
 				 * Formatting the response as a JSON
 				 */
@@ -97,7 +97,7 @@ public class BooksServlet extends HttpServlet {
 		 * @line47 Deserializing the JSON data into BookData POJO.
 		 * 
 		 */
-		RequestBookData requestBookData = (RequestBookData) gson.fromJson(jsonstring.toString(), RequestBookData.class);
+		BookData requestBookData = (BookData) gson.fromJson(jsonstring.toString(), BookData.class);
 		try {
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			/**
@@ -126,7 +126,7 @@ public class BooksServlet extends HttpServlet {
 			 */
 			Entity responseEntity = datastore.get(obj);
 
-			ResponseBookData responseBookData = new ResponseBookData();
+			BookData responseBookData = new BookData();
 			responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
 			/**
 			 * Formatting the response as a JSON
@@ -165,7 +165,7 @@ public class BooksServlet extends HttpServlet {
 		 * @line47 Deserializing the JSON data into BookData POJO.
 		 * 
 		 */
-		RequestBookData requestBookData = (RequestBookData) gson.fromJson(jsonstring.toString(), RequestBookData.class);
+		BookData requestBookData = (BookData) gson.fromJson(jsonstring.toString(), BookData.class);
 		try {
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -204,7 +204,7 @@ public class BooksServlet extends HttpServlet {
 			 * Fetching the updated entity and building a POJO to serve back the response.
 			 */
 			Entity responseEntity = datastore.get(obj);
-			ResponseBookData responseBookData = new ResponseBookData();
+			BookData responseBookData = new BookData();
 			responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
 
 			/**
