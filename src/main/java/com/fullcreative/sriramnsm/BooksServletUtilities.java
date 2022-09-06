@@ -2,6 +2,8 @@ package com.fullcreative.sriramnsm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.sql.Time;
+import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,6 +126,7 @@ public class BooksServletUtilities {
 		entity.setProperty("Link", requestBookData.getLink());
 		entity.setProperty("Year", requestBookData.getYear());
 		entity.setProperty("Pages", requestBookData.getPages());
+		entity.setProperty("CreatedOrUpdated", Time.from(Instant.now()));
 		return entity;
 	}
 

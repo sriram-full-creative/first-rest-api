@@ -55,7 +55,6 @@ public class BooksServlet extends HttpServlet {
 			response.setStatus(code);
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.getWriter().print("HELLO");
 			response.setStatus(400);
 		}
 	}
