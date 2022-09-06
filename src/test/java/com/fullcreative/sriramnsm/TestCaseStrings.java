@@ -3,7 +3,7 @@
  */
 package com.fullcreative.sriramnsm;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -11,83 +11,269 @@ import java.util.Map;
  *
  */
 public class TestCaseStrings {
-	public static Map<String, String> testCases = new HashMap<>();
-	public static Map<String, String> errorMessages = new HashMap<>();
+//	public static Map<String, Object> testCase;
+	public static Map<String, LinkedHashMap<String, Object>> errorMessages = new LinkedHashMap<>();
+	public static Map<String, LinkedHashMap<String, Object>> testCases = new LinkedHashMap<>();
 	static {
-		/**
-		 * Valid Test Case CreateBook
-		 */
-		testCases.put("validBook",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":1813}");
 
-		/**
-		 * 
-		 * @TestPass Invalid
-		 * @TestCase Author Name Null
-		 */
-		testCases.put("authorNameNull",
-				"{\"author\":\"\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":1813}");
+		testCases.put("validBook", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-		errorMessages.put("authorNameNull",
-				"{\"AUTHOR_NAME_ERROR\":\"Author Name should contain atleast 1 character\"}");
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", (Integer) 1836);
+			}
+		});
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Book Title Null
-		 */
-		testCases.put("bookTitleNull",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"\",\"year\":1813}");
-		errorMessages.put("bookTitleNull", "{\"TITLE_NAME_ERROR\":\"Title Name should contain atleast 1 character\"}");
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Country Null
-		 */
-		testCases.put("countryNull",
-				"{\"author\":\"Jane Austen\",\"country\":\"\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":1813}");
-		errorMessages.put("countryNull",
-				"{\"COUNTRY_FIELD_ERROR\":\"Country field can't be empty and should atleast have 3 characters\"}");
+		testCases.put("bookTitleNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Language Null
-		 */
-		testCases.put("languageNull",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":1813}");
-		errorMessages.put("languageNull", "{\"LANGUAGE_EMPTY_ERROR\":\"Language field can't be empty\"}");
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "");
+				put("year", 1836);
+			}
+		});
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Negative Pages Value
-		 */
-		testCases.put("negativePages",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":-226,\"title\":\"Pride and Prejudice\",\"year\":1813}");
-		errorMessages.put("negativePages", "{\"PAGES_ERROR\":\"Page Count should be Positive\"}");
+		errorMessages.put("bookTitleNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Page Count Less than twenty
-		 */
-		testCases.put("minPageCount",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":19,\"title\":\"Pride and Prejudice\",\"year\":1813}");
-		errorMessages.put("minPageCount", "{\"PAGES_ERROR\":\"Book should have atleast 20 pages\"}");
+			{
+				put("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
+			}
+		});
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Negative Year Value
-		 */
-		testCases.put("negativeYear",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":-1813}");
-		errorMessages.put("negativeYear", "{\"YEAR_NEGATIVE_VALUE_ERROR\":\"Year should be positive\"}");
 
-		/**
-		 * @TestPass Invalid
-		 * @TestCase Year Future Value
-		 */
-		testCases.put("futureYearValue",
-				"{\"author\":\"Jane Austen\",\"country\":\"United Kingdom\",\"imageLink\":\"images/pride-and-prejudice.jpg\",\"language\":\"English\",\"link\":\"https://en.wikipedia.org/wiki/Pride_and_Prejudice\\n\",\"pages\":226,\"title\":\"Pride and Prejudice\",\"year\":2023}");
-		errorMessages.put("futureYearValue",
-				"{\"YEAR_FUTURE_VALUE_ERROR\":\"Year should be less than or equal to the current year -> '2022'\"}");
+		testCases.put("authorNameNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("authorNameNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("AUTHOR_NAME_ERROR", "Author Name should contain atleast 1 character");
+			}
+		});
+
+
+		testCases.put("countryNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("countryNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("COUNTRY_FIELD_ERROR", "Country field can't be empty and should atleast have 3 characters");
+			}
+		});
+
+
+		testCases.put("languageNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("languageNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("LANGUAGE_EMPTY_ERROR", "Language field can't be empty");
+			}
+		});
+
+
+		testCases.put("negativePages", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", -784);
+				put("title", "Fairy tales");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("negativePages", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("PAGES_ERROR", "Page Count should be Positive");
+			}
+		});
+
+
+		testCases.put("minPageCount", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 7);
+				put("title", "Fairy tales");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("minPageCount", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("PAGES_ERROR", "Book should have atleast 20 pages");
+			}
+		});
+
+
+		testCases.put("negativeYear", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.\\n");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", -1836);
+			}
+		});
+
+		errorMessages.put("negativeYear", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("YEAR_NEGATIVE_VALUE_ERROR", "Year should be positive");
+			}
+		});
+
+
+		testCases.put("futureYearValue", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.\\n");
+				put("pages", 784);
+				put("title", "Fairy tales");
+				put("year", 2023);
+			}
+		});
+
+		errorMessages.put("futureYearValue", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("YEAR_FUTURE_VALUE_ERROR", "Year should be less than or equal to the current year -> '2022'");
+			}
+		});
+
 	}
 
 }

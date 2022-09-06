@@ -2,12 +2,14 @@ package com.fullcreative.sriramnsm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Time;
 import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 public class BooksServletUtilities {
 	/**
@@ -74,7 +77,7 @@ public class BooksServletUtilities {
 	 * @throws JsonSyntaxException
 	 */
 	public static BookData stringBufferToPojo(StringBuffer jsonstring) throws JsonSyntaxException {
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		BookData requestBookData = (BookData) gson.fromJson(jsonstring.toString(), BookData.class);
 		return requestBookData;
@@ -178,7 +181,7 @@ public class BooksServletUtilities {
 		while ((line = reader.readLine()) != null) {
 			jsonstring.append(line);
 		}
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		BookData requestBookData = (BookData) gson.fromJson(jsonstring.toString(), BookData.class);
 		return requestBookData;
@@ -280,79 +283,104 @@ public class BooksServletUtilities {
 
 	/**
 	 * @param requestBookData
-	 * @param jsonErrorString
+	 * @param errorMap
 	 * @return JsonObject
 	 */
-	public static JsonObject requestValidatorObject(BookData requestBookData, JsonObject jsonErrorString) {
+	public static LinkedHashMap<String, Object> requestValidatorObject(BookData requestBookData,
+			LinkedHashMap<String, Object> errorMap) {
 		int flag = 0;
 		if (requestBookData.getTitle().length() <= 0 || requestBookData.getTitle() == null) {
-			jsonErrorString.addProperty("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
+			errorMap.put("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
 			flag = 1;
 		}
 		if (requestBookData.getAuthor().length() <= 0 || requestBookData.getAuthor() == null) {
-			jsonErrorString.addProperty("AUTHOR_NAME_ERROR", "Author Name should contain atleast 1 character");
+			errorMap.put("AUTHOR_NAME_ERROR", "Author Name should contain atleast 1 character");
 			flag = 1;
 		}
 		if (requestBookData.getPages() <= 20) {
 			if (requestBookData.getPages() < 0) {
-				jsonErrorString.addProperty("PAGES_ERROR", "Page Count should be Positive");
+				errorMap.put("PAGES_ERROR", "Page Count should be Positive");
 				flag = 1;
 			} else {
-				jsonErrorString.addProperty("PAGES_ERROR", "Book should have atleast 20 pages");
+				errorMap.put("PAGES_ERROR", "Book should have atleast 20 pages");
 				flag = 1;
 			}
 		}
 		if (requestBookData.getYear() <= 0) {
-			jsonErrorString.addProperty("YEAR_NEGATIVE_VALUE_ERROR", "Year should be positive");
+			errorMap.put("YEAR_NEGATIVE_VALUE_ERROR", "Year should be positive");
 			flag = 1;
 		}
 		if (requestBookData.getYear() > Year.now().getValue()) {
-			jsonErrorString.addProperty("YEAR_FUTURE_VALUE_ERROR",
+			errorMap.put("YEAR_FUTURE_VALUE_ERROR",
 					"Year should be less than or equal to the current year -> '" + Year.now().getValue() + "'");
 			flag = 1;
 		}
 		if (requestBookData.getLanguage().length() <= 0 || requestBookData.getLanguage() == null) {
-			jsonErrorString.addProperty("LANGUAGE_EMPTY_ERROR", "Language field can't be empty");
+			errorMap.put("LANGUAGE_EMPTY_ERROR", "Language field can't be empty");
 			flag = 1;
 		}
 		if (requestBookData.getCountry().length() <= 3 || requestBookData.getCountry() == null) {
-			jsonErrorString.addProperty("COUNTRY_FIELD_ERROR",
+			errorMap.put("COUNTRY_FIELD_ERROR",
 					"Country field can't be empty and should atleast have 3 characters");
 			flag = 1;
 		}
 		if (flag == 1) {
-			jsonErrorString.addProperty("STATUS_CODE", 400);
+			errorMap.put("STATUS_CODE", 400);
 		}
-		return jsonErrorString;
+		return errorMap;
 	}
 
+	public static String mapToJsonString(LinkedHashMap<String, Object> linkedHashMap) {
+		Gson gson = new Gson();
+		Type gsonType = new TypeToken<HashMap>() {
+		}.getType();
+		String gsonString = gson.toJson(linkedHashMap, gsonType);
+		BookData book = gson.fromJson(gsonString, BookData.class);
+		String jsonString = gson.toJson(book);
+		return jsonString;
+	}
 
 	/**
 	 * @param jsonInputString
 	 * @return JsonObject
 	 * @throws EntityNotFoundException
 	 */
-	public static JsonObject createBook(String jsonInputString) throws EntityNotFoundException {
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+
+
+	public static LinkedHashMap<String, Object> createBook(String jsonInputString) throws EntityNotFoundException {
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		BookData requestBookData = gson.fromJson(jsonInputString, BookData.class);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		String responseAsJson;
-		JsonObject jsonStringResponse = new JsonObject();
-		if (requestValidatorObject(requestBookData, jsonStringResponse).keySet().size() != 0) {
-			jsonStringResponse = requestValidatorObject(requestBookData, jsonStringResponse);
-			return jsonStringResponse;
+		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
+		responseMap = requestValidatorObject(requestBookData, responseMap);
+//		System.out.println(responseMap);
+		if (responseMap.size() != 0) {
+			return responseMap;
 		} else {
 			String bookID = UUID.randomUUID().toString();
 			Entity entity = entityFromBook(requestBookData, bookID);
-			Key obj = datastore.put(entity);
-			Entity responseEntity = datastore.get(obj);
+			Key keyObj = datastore.put(entity);
+			try {
+			Entity responseEntity = datastore.get(keyObj);
 			BookData responseBookData = new BookData();
 			responseBookData = bookFromEntity(responseEntity);
-			responseAsJson = gson.toJson(responseBookData);
-			JsonObject jsonResponseObject = new Gson().fromJson(responseAsJson, JsonObject.class);
-			jsonResponseObject.addProperty("STATUS_CODE", 200);
-			return jsonResponseObject;
+			String responseAsJson = gson.toJson(responseBookData);
+			responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
+			Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
+			Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
+			int pages = pagesFloatValue.intValue();
+			int year = yearFloatValue.intValue();
+			responseMap.replace("pages", pages);
+			responseMap.replace("year", year);
+			responseMap.put("BOOK_ID", keyObj.getName());
+			responseMap.put("STATUS_CODE", 200);
+		} catch (Exception e) {
+			System.out.println("Thrown from createBook Method");
+			responseMap.put("ERROR", "Book was not created");
+			e.printStackTrace();
+		}
+			return responseMap;
 		}
 	}
 
@@ -361,15 +389,31 @@ public class BooksServletUtilities {
 	 * @return String
 	 * @throws EntityNotFoundException
 	 */
-	public static String getOneBook(String bookID) throws EntityNotFoundException {
+	public static LinkedHashMap<String, Object> getOneBook(String bookID) throws EntityNotFoundException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Key bookKey = KeyFactory.createKey("Books", bookID);
-		Entity responseEntity = datastore.get(bookKey);
-		BookData responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
-				.create();
-		String jsonStringResponse = gson.toJson(responseBookData);
-		return jsonStringResponse;
+		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
+		try {
+			Entity responseEntity = datastore.get(bookKey);
+			BookData responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
+			Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().create();
+			String responseAsJson = gson.toJson(responseBookData);
+
+			responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
+			Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
+			Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
+			int pages = pagesFloatValue.intValue();
+			int year = yearFloatValue.intValue();
+			responseMap.replace("pages", pages);
+			responseMap.replace("year", year);
+			responseMap.put("STATUS_CODE", 200);
+		} catch (Exception e) {
+			System.out.println("Caught in getOneBook method");
+			e.printStackTrace();
+			responseMap.put("ERROR", "Book not Found, Invalid Key");
+			responseMap.put("STATUS_CODE", 404);
+		}
+		return responseMap;
 	}
 
 	/**
@@ -380,11 +424,24 @@ public class BooksServletUtilities {
 		Query query = new Query();
 		List<Entity> bookEntities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 		List<BookData> books = BooksServletUtilities.booksFromEntities(bookEntities);
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		String jsonStringResponse = gson.toJson(books);
 		return jsonStringResponse;
 	}
+
+	public static List<LinkedHashMap<String, Object>> getAllBooksAsList() {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Query query = new Query();
+		List<Entity> bookEntities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+		List<BookData> books = BooksServletUtilities.booksFromEntities(bookEntities);
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+				.create();
+		String jsonStringResponse = gson.toJson(books);
+		List<LinkedHashMap<String, Object>> responseJsonArray = new Gson().fromJson(jsonStringResponse, List.class);
+		return responseJsonArray;
+	}
+
 
 	/**
 	 * @param jsonInputString
@@ -392,44 +449,63 @@ public class BooksServletUtilities {
 	 * @return JsonObject
 	 * @throws EntityNotFoundException
 	 */
-	public static JsonObject UpdateBook(String jsonInputString, String bookID) throws EntityNotFoundException {
-		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+	public static LinkedHashMap<String, Object> UpdateBook(String jsonInputString, String bookID)
+			throws EntityNotFoundException {
+		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
 		BookData requestBookData = gson.fromJson(jsonInputString, BookData.class);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		String responseAsJson;
-		JsonObject jsonResponseObject = new JsonObject();
-		if (requestValidatorObject(requestBookData, jsonResponseObject).keySet().size() != 0) {
-			jsonResponseObject = requestValidatorObject(requestBookData, jsonResponseObject);
-			return jsonResponseObject;
-		} else {
-			Entity entity = entityFromBook(requestBookData, bookID);
-			if (datastore.get(entity.getKey()) != null) {
-				Key obj = datastore.put(entity);
-				Entity responseEntity = datastore.get(obj);
+		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
+		Entity entity = entityFromBook(requestBookData, bookID);
+		try {
+			Entity checkEntity = datastore.get(entity.getKey());
+			responseMap = requestValidatorObject(requestBookData, responseMap);
+			if (responseMap.size() != 0) {
+				return responseMap;
+			} else {
+				Key keyObj = datastore.put(entity);
+				Entity responseEntity = datastore.get(keyObj);
 				BookData responseBookData = new BookData();
 				responseBookData = bookFromEntity(responseEntity);
-				responseAsJson = gson.toJson(responseBookData);
-				jsonResponseObject = new Gson().fromJson(responseAsJson, JsonObject.class);
-				jsonResponseObject.addProperty("STATUS_CODE", 200);
-			} else {
-				jsonResponseObject.addProperty("KEY_ERROR", "No Entity Found");
-				jsonResponseObject.addProperty("STATUS_CODE", 404);
+				String responseAsJson = gson.toJson(responseBookData);
+				responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
+				Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
+				Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
+				int pages = pagesFloatValue.intValue();
+				int year = yearFloatValue.intValue();
+				responseMap.replace("pages", pages);
+				responseMap.replace("year", year);
+				responseMap.put("BOOK_ID", keyObj.getName());
+				responseMap.put("STATUS_CODE", 200);
 			}
-			return jsonResponseObject;
+			} catch (Exception e) {
+				System.out.println("Caught in updateBook method");
+				e.printStackTrace();
+				responseMap.put("ERROR", "Book not Found, Invalid Key");
+				responseMap.put("STATUS_CODE", 404);
+			}
+			return responseMap;
 		}
-	}
 
 	/**
 	 * @param bookID
 	 * @throws EntityNotFoundException
 	 */
-	public static void deleteBook(String bookID) throws EntityNotFoundException {
+	public static LinkedHashMap<String, Object> deleteBook(String bookID) throws EntityNotFoundException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Key entityKey = KeyFactory.createKey("Books", bookID);
-		if (datastore.get(entityKey) != null) {
+		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
+		try {
+			datastore.get(entityKey);
 			datastore.delete(entityKey);
+			responseMap.put("SUCCESS", "Book was deleted");
+			responseMap.put("STATUS_CODE", 200);
+		} catch (Exception e) {
+			System.out.println("Caught in deleteBook Method");
+			responseMap.put("ERROR", "Book not Found, Invalid Key");
+			responseMap.put("STATUS_CODE", 404);
 		}
+		return responseMap;
 	}
 
 }
