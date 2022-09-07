@@ -101,6 +101,11 @@ public class BooksServletUtilities {
 		return bookData;
 	}
 
+	/**
+	 * @param book
+	 * @param map
+	 * @return LinkedHashMap<String, Object>
+	 */
 	public static LinkedHashMap<String, Object> mapFromBook(BookData book, LinkedHashMap<String, Object> map) {
 		map.put("author", book.getAuthor());
 		map.put("country", book.getCountry());
@@ -342,6 +347,10 @@ public class BooksServletUtilities {
 		return errorMap;
 	}
 
+	/**
+	 * @param linkedHashMap
+	 * @return String
+	 */
 	public static String mapToJsonString(LinkedHashMap<String, Object> linkedHashMap) {
 		Gson gson = new Gson();
 		Type gsonType = new TypeToken<HashMap>() {
@@ -352,13 +361,12 @@ public class BooksServletUtilities {
 		return jsonString;
 	}
 
+
 	/**
 	 * @param jsonInputString
 	 * @return JsonObject
 	 * @throws EntityNotFoundException
 	 */
-
-
 	public static LinkedHashMap<String, Object> createBook(String jsonInputString) throws EntityNotFoundException {
 		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
@@ -426,6 +434,9 @@ public class BooksServletUtilities {
 		return jsonStringResponse;
 	}
 
+	/**
+	 * @return List<LinkedHashMap<String, Object>>
+	 */
 	public static List<LinkedHashMap<String, Object>> getAllBooksAsList() {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query query = new Query();

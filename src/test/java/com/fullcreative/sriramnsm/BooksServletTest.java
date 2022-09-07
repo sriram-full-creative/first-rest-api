@@ -1,6 +1,7 @@
 package com.fullcreative.sriramnsm;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.LinkedHashMap;
 
@@ -161,14 +162,15 @@ public class BooksServletTest {
 	 * 
 	 * @throws EntityNotFoundException
 	 */
-
 	@Test
 	public void getOneBookPositiveTest() throws EntityNotFoundException {
 		LinkedHashMap<String, Object> validBookMap = GetBookTestCaseStrings.testCases.get("validBook1");
+		// Creating a book using test utility method
 		LinkedHashMap<String, Object> createdBook = createBookInTestEnv(validBookMap);
 		LinkedHashMap<String, Object> strippedMap = stripBookInTestEnv(createdBook);
 		int StatusCode = Integer.parseInt(strippedMap.get("STATUS_CODE").toString());
 		String createdBookString = BooksServletUtilities.mapToJsonString(createdBook);
+		// Calling getOneBook
 		LinkedHashMap<String, Object> actualBookMap = BooksServletUtilities
 				.getOneBook(strippedMap.get("BOOK_ID").toString());
 		String actualBookString = BooksServletUtilities.mapToJsonString(actualBookMap);
@@ -180,6 +182,7 @@ public class BooksServletTest {
 
 	@Test
 	public void getOneBookNegativeTest() throws EntityNotFoundException {
+		// Calling getOneBook
 		LinkedHashMap<String, Object> actualBookMap = BooksServletUtilities
 				.getOneBook(GetBookTestCaseStrings.bookID.get("INVALID_BOOK_ID"));
 		LinkedHashMap<String, Object> expectedResponseMap = GetBookTestCaseStrings.testCases.get("noBookResponse");
@@ -196,7 +199,7 @@ public class BooksServletTest {
 		// Creating a book with valid but wrong details that are to be updated
 		LinkedHashMap<String, Object> validBookMapBeforeUpdate = UpdateBookTestCaseStrings.testCases
 				.get("validBookBeforeUpdate");
-
+		// Creating a book using test utility method
 		LinkedHashMap<String, Object> createdBookBeforeUpdate = createBookInTestEnv(validBookMapBeforeUpdate);
 		LinkedHashMap<String, Object> strippedMapBeforeUpdate = stripBookInTestEnv(createdBookBeforeUpdate);
 		String bookIDBeforeUpdate = strippedMapBeforeUpdate.get("BOOK_ID").toString();
@@ -215,6 +218,7 @@ public class BooksServletTest {
 		LinkedHashMap<String, Object> validBookMapAfterUpdate = UpdateBookTestCaseStrings.testCases
 				.get("validBookAfterUpdate");
 		String createdBookStringAfterUpdate = BooksServletUtilities.mapToJsonString(validBookMapAfterUpdate);
+		// Calling updatBook
 		LinkedHashMap<String, Object> actualBookMapAfterUpdate = BooksServletUtilities
 				.updateBook(createdBookStringAfterUpdate, strippedMapBeforeUpdate.get("BOOK_ID").toString());
 		LinkedHashMap<String, Object> strippedMapAfterUpdate = stripBookInTestEnv(actualBookMapAfterUpdate);
@@ -235,7 +239,7 @@ public class BooksServletTest {
 		// Creating a book with valid but wrong details that are to be updated
 		LinkedHashMap<String, Object> validBookMapBeforeUpdate = UpdateBookTestCaseStrings.testCases
 				.get("validBookBeforeUpdate");
-
+		// Creating a book using test utility method
 		LinkedHashMap<String, Object> createdBookBeforeUpdate = createBookInTestEnv(validBookMapBeforeUpdate);
 		LinkedHashMap<String, Object> strippedMapBeforeUpdate = stripBookInTestEnv(createdBookBeforeUpdate);
 
@@ -251,6 +255,7 @@ public class BooksServletTest {
 		LinkedHashMap<String, Object> validBookMapAfterUpdate = UpdateBookTestCaseStrings.testCases
 				.get("validBookAfterUpdate");
 		String createdBookStringAfterUpdate = BooksServletUtilities.mapToJsonString(validBookMapAfterUpdate);
+		// Calling updatBook
 		LinkedHashMap<String, Object> actualBookMapAfterUpdate = BooksServletUtilities.updateBook(
 				createdBookStringAfterUpdate, UpdateBookTestCaseStrings.bookID.get("INVALID_BOOK_ID").toString());
 		LinkedHashMap<String, Object> expectedResponseMap = GetBookTestCaseStrings.testCases.get("noBookResponse");
@@ -260,6 +265,75 @@ public class BooksServletTest {
 		assertEquals(expectedResponseMap.toString(), actualBookStringAfterUpdate);
 	}
 
+	@Test
+	public void deleteBookPositiveTest() throws EntityNotFoundException {
+
+		// Creating a book with valid details
+		LinkedHashMap<String, Object> validBookMapBeforeDelete = DeleteBookTestCaseStrings.testCases.get("validBook");
+		// Creating a book using test utility method
+		LinkedHashMap<String, Object> createdBookBeforeDelete = createBookInTestEnv(validBookMapBeforeDelete);
+		LinkedHashMap<String, Object> strippedMapBeforeDelete = stripBookInTestEnv(createdBookBeforeDelete);
+		String bookIDBeforeDelete = strippedMapBeforeDelete.get("BOOK_ID").toString();
+		int codeBeforeDelete = Integer.parseInt(strippedMapBeforeDelete.get("STATUS_CODE").toString());
+
+		String createdBookStringBeforeDelete = BooksServletUtilities.mapToJsonString(createdBookBeforeDelete);
+
+		LinkedHashMap<String, Object> actualBookMapBeforeDelete = BooksServletUtilities.getOneBook(bookIDBeforeDelete);
+		String actualBookStringBeforeDelete = BooksServletUtilities.mapToJsonString(actualBookMapBeforeDelete);
+
+		assertEquals(200, codeBeforeDelete);
+		assertEquals(createdBookStringBeforeDelete, actualBookStringBeforeDelete);
+
+		// Deleting the book with Correct Book ID
+		LinkedHashMap<String, Object> expectedResponseMapAfterDelete = DeleteBookTestCaseStrings.testCases
+				.get("responseAfterSuccessfullDelete");
+		// Calling deleteBook
+		LinkedHashMap<String, Object> actualResponseMapAfterDelete = BooksServletUtilities
+				.deleteBook(strippedMapBeforeDelete.get("BOOK_ID").toString());
+		System.out.println(actualResponseMapAfterDelete);
+		System.out.println(expectedResponseMapAfterDelete);
+		LinkedHashMap<String, Object> strippedMapAfterDelete = stripBookInTestEnv(actualResponseMapAfterDelete);
+		int codeAfterDelete = Integer.parseInt(strippedMapAfterDelete.get("STATUS_CODE").toString());
+
+		assertEquals(expectedResponseMapAfterDelete, actualResponseMapAfterDelete);
+		assertEquals(200, codeAfterDelete);
+	}
+
+	@Test
+	public void deleteBookNegativeTest() throws EntityNotFoundException {
+
+		// Creating a book with valid details
+		LinkedHashMap<String, Object> validBookMapBeforeDelete = DeleteBookTestCaseStrings.testCases.get("validBook");
+		// Creating a book using test utility method
+		LinkedHashMap<String, Object> createdBookBeforeDelete = createBookInTestEnv(validBookMapBeforeDelete);
+		LinkedHashMap<String, Object> strippedMapBeforeDelete = stripBookInTestEnv(createdBookBeforeDelete);
+		String bookIDBeforeDelete = strippedMapBeforeDelete.get("BOOK_ID").toString();
+		int codeBeforeDelete = Integer.parseInt(strippedMapBeforeDelete.get("STATUS_CODE").toString());
+
+		String createdBookStringBeforeDelete = BooksServletUtilities.mapToJsonString(createdBookBeforeDelete);
+
+		LinkedHashMap<String, Object> actualBookMapBeforeDelete = BooksServletUtilities.getOneBook(bookIDBeforeDelete);
+		String actualBookStringBeforeDelete = BooksServletUtilities.mapToJsonString(actualBookMapBeforeDelete);
+
+		assertEquals(200, codeBeforeDelete);
+		assertEquals(createdBookStringBeforeDelete, actualBookStringBeforeDelete);
+
+		// Deleting the book with Wrong Book ID
+		LinkedHashMap<String, Object> expectedResponseMapAfterDelete = DeleteBookTestCaseStrings.testCases
+				.get("noBookResponse");
+		String wrongBookId = DeleteBookTestCaseStrings.bookID.get("INVALID_BOOK_ID");
+		// Calling deleteBook
+		LinkedHashMap<String, Object> actualResponseMapAfterDelete = BooksServletUtilities
+				.deleteBook(wrongBookId);
+		System.out.println(actualResponseMapAfterDelete);
+		System.out.println(expectedResponseMapAfterDelete);
+		LinkedHashMap<String, Object> strippedMapAfterDelete = stripBookInTestEnv(actualResponseMapAfterDelete);
+		int codeAfterDelete = Integer.parseInt(strippedMapAfterDelete.get("STATUS_CODE").toString());
+
+		assertNotEquals(bookIDBeforeDelete, wrongBookId);
+		assertEquals(expectedResponseMapAfterDelete, actualResponseMapAfterDelete);
+		assertEquals(404, codeAfterDelete);
+	}
 
 }
 
