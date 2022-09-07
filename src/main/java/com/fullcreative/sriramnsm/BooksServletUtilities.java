@@ -101,6 +101,18 @@ public class BooksServletUtilities {
 		return bookData;
 	}
 
+	public static LinkedHashMap<String, Object> mapFromBook(BookData book, LinkedHashMap<String, Object> map) {
+		map.put("author", book.getAuthor());
+		map.put("country", book.getCountry());
+		map.put("imageLink", book.getImageLink());
+		map.put("language", book.getLanguage());
+		map.put("link", book.getLink());
+		map.put("pages", book.getPages());
+		map.put("title", book.getTitle());
+		map.put("year", book.getYear());
+		return map;
+	}
+
 
 	/**
 	 * @param entities
@@ -354,7 +366,6 @@ public class BooksServletUtilities {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
 		responseMap = requestValidatorObject(requestBookData, responseMap);
-//		System.out.println(responseMap);
 		if (responseMap.size() != 0) {
 			return responseMap;
 		} else {
@@ -365,19 +376,13 @@ public class BooksServletUtilities {
 			Entity responseEntity = datastore.get(keyObj);
 			BookData responseBookData = new BookData();
 			responseBookData = bookFromEntity(responseEntity);
-			String responseAsJson = gson.toJson(responseBookData);
-			responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
-			Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
-			Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
-			int pages = pagesFloatValue.intValue();
-			int year = yearFloatValue.intValue();
-			responseMap.replace("pages", pages);
-			responseMap.replace("year", year);
+			responseMap = mapFromBook(responseBookData, responseMap);
 			responseMap.put("BOOK_ID", keyObj.getName());
 			responseMap.put("STATUS_CODE", 200);
 		} catch (Exception e) {
 			System.out.println("Thrown from createBook Method");
 			responseMap.put("ERROR", "Book was not created");
+			responseMap.put("STATUS_CODE", 503);
 			e.printStackTrace();
 		}
 			return responseMap;
@@ -396,21 +401,12 @@ public class BooksServletUtilities {
 		try {
 			Entity responseEntity = datastore.get(bookKey);
 			BookData responseBookData = BooksServletUtilities.bookFromEntity(responseEntity);
-			Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().create();
-			String responseAsJson = gson.toJson(responseBookData);
-
-			responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
-			Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
-			Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
-			int pages = pagesFloatValue.intValue();
-			int year = yearFloatValue.intValue();
-			responseMap.replace("pages", pages);
-			responseMap.replace("year", year);
+			responseMap = mapFromBook(responseBookData, responseMap);
 			responseMap.put("STATUS_CODE", 200);
 		} catch (Exception e) {
 			System.out.println("Caught in getOneBook method");
 			e.printStackTrace();
-			responseMap.put("ERROR", "Book not Found, Invalid Key");
+			responseMap.put("ERROR", "Book not Found. Invalid Key");
 			responseMap.put("STATUS_CODE", 404);
 		}
 		return responseMap;
@@ -449,7 +445,7 @@ public class BooksServletUtilities {
 	 * @return JsonObject
 	 * @throws EntityNotFoundException
 	 */
-	public static LinkedHashMap<String, Object> UpdateBook(String jsonInputString, String bookID)
+	public static LinkedHashMap<String, Object> updateBook(String jsonInputString, String bookID)
 			throws EntityNotFoundException {
 		Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
 				.create();
@@ -467,21 +463,14 @@ public class BooksServletUtilities {
 				Entity responseEntity = datastore.get(keyObj);
 				BookData responseBookData = new BookData();
 				responseBookData = bookFromEntity(responseEntity);
-				String responseAsJson = gson.toJson(responseBookData);
-				responseMap = new Gson().fromJson(responseAsJson, LinkedHashMap.class);
-				Float pagesFloatValue = Float.parseFloat(responseMap.get("pages").toString());
-				Float yearFloatValue = Float.parseFloat(responseMap.get("year").toString());
-				int pages = pagesFloatValue.intValue();
-				int year = yearFloatValue.intValue();
-				responseMap.replace("pages", pages);
-				responseMap.replace("year", year);
+				responseMap = mapFromBook(responseBookData, responseMap);
 				responseMap.put("BOOK_ID", keyObj.getName());
 				responseMap.put("STATUS_CODE", 200);
 			}
 			} catch (Exception e) {
 				System.out.println("Caught in updateBook method");
 				e.printStackTrace();
-				responseMap.put("ERROR", "Book not Found, Invalid Key");
+				responseMap.put("ERROR", "Book not Found. Invalid Key");
 				responseMap.put("STATUS_CODE", 404);
 			}
 			return responseMap;
@@ -502,7 +491,8 @@ public class BooksServletUtilities {
 			responseMap.put("STATUS_CODE", 200);
 		} catch (Exception e) {
 			System.out.println("Caught in deleteBook Method");
-			responseMap.put("ERROR", "Book not Found, Invalid Key");
+			e.printStackTrace();
+			responseMap.put("ERROR", "Book not Found. Invalid Key");
 			responseMap.put("STATUS_CODE", 404);
 		}
 		return responseMap;

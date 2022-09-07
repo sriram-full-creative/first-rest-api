@@ -10,8 +10,7 @@ import java.util.Map;
  * @author sriram
  *
  */
-public class TestCaseStrings {
-//	public static Map<String, Object> testCase;
+public class CreateBookTestCaseStrings {
 	public static Map<String, LinkedHashMap<String, Object>> errorMessages = new LinkedHashMap<>();
 	public static Map<String, LinkedHashMap<String, Object>> testCases = new LinkedHashMap<>();
 	static {
@@ -30,37 +29,7 @@ public class TestCaseStrings {
 				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
 				put("pages", 784);
 				put("title", "Fairy tales");
-				put("year", (Integer) 1836);
-			}
-		});
-
-
-		testCases.put("bookTitleNull", new LinkedHashMap<String, Object>() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				put("author", "Hans Christian Andersen");
-				put("country", "Denmark");
-				put("imageLink", "images/fairy-tales.jpg");
-				put("language", "Danish");
-				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
-				put("pages", 784);
-				put("title", "");
 				put("year", 1836);
-			}
-		});
-
-		errorMessages.put("bookTitleNull", new LinkedHashMap<String, Object>() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				put("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
 			}
 		});
 
@@ -91,6 +60,35 @@ public class TestCaseStrings {
 
 			{
 				put("AUTHOR_NAME_ERROR", "Author Name should contain atleast 1 character");
+			}
+		});
+
+		testCases.put("bookTitleNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("author", "Hans Christian Andersen");
+				put("country", "Denmark");
+				put("imageLink", "images/fairy-tales.jpg");
+				put("language", "Danish");
+				put("link", "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.");
+				put("pages", 784);
+				put("title", "");
+				put("year", 1836);
+			}
+		});
+
+		errorMessages.put("bookTitleNull", new LinkedHashMap<String, Object>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+				put("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
 			}
 		});
 

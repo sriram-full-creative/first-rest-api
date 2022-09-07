@@ -30,7 +30,6 @@ public class BooksServlet extends HttpServlet {
 				String bookID = BooksServletUtilities.getBookKeyFromUri(request);
 				Map<String, Object> responseMap = new LinkedHashMap<>();
 				responseMap = BooksServletUtilities.getOneBook(bookID);
-//				responseMap.get()
 				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
 				String responseAsJson = new Gson().toJson(responseMap);
 				response.setContentType("application/json");
@@ -98,7 +97,7 @@ public class BooksServlet extends HttpServlet {
 			String jsonString = BooksServletUtilities.payloadAsStringFromRequest(request);
 			String BookID = BooksServletUtilities.getBookKeyFromUri(request);
 			Map<String, Object> responseMap = new LinkedHashMap<>();
-			responseMap = BooksServletUtilities.UpdateBook(jsonString, BookID);
+			responseMap = BooksServletUtilities.updateBook(jsonString, BookID);
 			int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
 			if (responseMap.containsKey("BOOK_ID")) {
 				String key = responseMap.remove("BOOK_ID").toString();
