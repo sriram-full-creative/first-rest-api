@@ -2,6 +2,7 @@ package com.fullcreative.sriramnsm;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -36,7 +37,7 @@ public class BooksServlet extends HttpServlet {
 				response.getWriter().println(responseAsJson);
 				response.setStatus(code);
 			} else {
-				String arrayOfBooks = BooksServletUtilities.getAllBooks();
+				LinkedList<String> arrayOfBooks = BooksServletUtilities.getAllBooks();
 				response.setContentType("application/json");
 				response.getWriter().println(arrayOfBooks);
 				response.setStatus(200);
@@ -44,14 +45,20 @@ public class BooksServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Caught in doGet servlet service method");
 			e.printStackTrace();
-			response.setStatus(500);
+
 			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				{
 					put("500", "Something went wrong");
 				}
 			};
 			String internalServerError = new Gson().toJson(internalServerErrorMap);
 			response.getWriter().println(internalServerError);
+			response.setStatus(500);
 		}
 	}
 
@@ -78,6 +85,11 @@ public class BooksServlet extends HttpServlet {
 			e.printStackTrace();
 			response.setStatus(500);
 			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				{
 					put("500", "Something went wrong");
 				}
@@ -111,6 +123,11 @@ public class BooksServlet extends HttpServlet {
 			e.printStackTrace();
 			response.setStatus(500);
 			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				{
 					put("500", "Something went wrong");
 				}
@@ -140,6 +157,11 @@ public class BooksServlet extends HttpServlet {
 			e.printStackTrace();
 			response.setStatus(500);
 			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				{
 					put("500", "Something went wrong");
 				}

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,11 +45,19 @@ public class BooksServletTest {
 		return strippedMap;
 	}
 
+	private LinkedHashMap<String, Object> createAndStrip(LinkedHashMap<String, Object> ValidTestCaseMap)
+			throws EntityNotFoundException {
+		LinkedHashMap<String, Object> createdBook = createBookInTestEnv(ValidTestCaseMap);
+		return createdBook;
+	}
+
 	/**
 	 * Tests for POST Methods
 	 */
 	@Test
 	public void validBookcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("validBookcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("validBook");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
 		System.out.println(inputString);
@@ -63,6 +72,8 @@ public class BooksServletTest {
 
 	@Test
 	public void authorNameNullcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("authorNameNullcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("authorNameNull");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("authorNameNull");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -75,6 +86,8 @@ public class BooksServletTest {
 
 	@Test
 	public void bookTitleNullcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("bookTitleNullcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("bookTitleNull");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("bookTitleNull");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -87,6 +100,8 @@ public class BooksServletTest {
 
 	@Test
 	public void countryNullcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("countryNullcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("countryNull");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("countryNull");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -99,6 +114,8 @@ public class BooksServletTest {
 
 	@Test
 	public void languageNullcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("languageNullcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("languageNull");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("languageNull");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -111,6 +128,8 @@ public class BooksServletTest {
 
 	@Test
 	public void negativePagescreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("negativePagescreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("negativePages");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("negativePages");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -123,6 +142,8 @@ public class BooksServletTest {
 
 	@Test
 	public void minPageCountcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("minPageCountcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("minPageCount");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("minPageCount");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -135,6 +156,8 @@ public class BooksServletTest {
 
 	@Test
 	public void negativeYearcreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("negativeYearcreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("negativeYear");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("negativeYear");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -147,6 +170,8 @@ public class BooksServletTest {
 
 	@Test
 	public void futureYearValuecreateBookTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("futureYearValuecreateBookTest()");
 		LinkedHashMap<String, Object> testCaseMap = CreateBookTestCaseStrings.testCases.get("futureYearValue");
 		LinkedHashMap<String, Object> errorMessage = CreateBookTestCaseStrings.errorMessages.get("futureYearValue");
 		String inputString = BooksServletUtilities.mapToJsonString(testCaseMap);
@@ -163,7 +188,33 @@ public class BooksServletTest {
 	 * @throws EntityNotFoundException
 	 */
 	@Test
+	public void getAllBooksTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("getAllBooksTest()");
+		LinkedHashMap<String, Object> validBook1Map = GetBookTestCaseStrings.testCases.get("validBook1");
+		LinkedHashMap<String, Object> createdBook1 = createAndStrip(validBook1Map);
+		String createdBook1String = BooksServletUtilities.mapToJsonString(createdBook1);
+		LinkedHashMap<String, Object> validBook2Map = GetBookTestCaseStrings.testCases.get("validBook2");
+		LinkedHashMap<String, Object> createdBook2 = createAndStrip(validBook2Map);
+		String createdBook2String = BooksServletUtilities.mapToJsonString(createdBook2);
+		LinkedHashMap<String, Object> validBook3Map = GetBookTestCaseStrings.testCases.get("validBook3");
+		LinkedHashMap<String, Object> createdBook3 = createAndStrip(validBook3Map);
+		String createdBook3String = BooksServletUtilities.mapToJsonString(createdBook3);
+		// Construction the expected array
+		LinkedList<String> expectedArrayOfBooks = new LinkedList<>();
+		expectedArrayOfBooks.add(createdBook3String);
+		expectedArrayOfBooks.add(createdBook2String);
+		expectedArrayOfBooks.add(createdBook1String);
+		// Calling getAllBooks
+		LinkedList<String> actualArrayOfBooks = BooksServletUtilities.getAllBooks();
+		assertEquals(expectedArrayOfBooks, actualArrayOfBooks);
+	}
+
+	@Test
 	public void getOneBookPositiveTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("getOneBookPositiveTest()");
+
 		LinkedHashMap<String, Object> validBookMap = GetBookTestCaseStrings.testCases.get("validBook1");
 		// Creating a book using test utility method
 		LinkedHashMap<String, Object> createdBook = createBookInTestEnv(validBookMap);
@@ -182,6 +233,8 @@ public class BooksServletTest {
 
 	@Test
 	public void getOneBookNegativeTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("getOneBookNegativeTest()");
 		// Calling getOneBook
 		LinkedHashMap<String, Object> actualBookMap = BooksServletUtilities
 				.getOneBook(GetBookTestCaseStrings.bookID.get("INVALID_BOOK_ID"));
@@ -195,6 +248,8 @@ public class BooksServletTest {
 
 	@Test
 	public void updateBookPositiveTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("updateBookPositiveTest()");
 
 		// Creating a book with valid but wrong details that are to be updated
 		LinkedHashMap<String, Object> validBookMapBeforeUpdate = UpdateBookTestCaseStrings.testCases
@@ -236,6 +291,9 @@ public class BooksServletTest {
 
 	@Test
 	public void updateBookNegativeTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("updateBookNegativeTest()");
+
 		// Creating a book with valid but wrong details that are to be updated
 		LinkedHashMap<String, Object> validBookMapBeforeUpdate = UpdateBookTestCaseStrings.testCases
 				.get("validBookBeforeUpdate");
@@ -267,6 +325,8 @@ public class BooksServletTest {
 
 	@Test
 	public void deleteBookPositiveTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("deleteBookPositiveTest()");
 
 		// Creating a book with valid details
 		LinkedHashMap<String, Object> validBookMapBeforeDelete = DeleteBookTestCaseStrings.testCases.get("validBook");
@@ -301,6 +361,8 @@ public class BooksServletTest {
 
 	@Test
 	public void deleteBookNegativeTest() throws EntityNotFoundException {
+		System.out.println();
+		System.out.println("deleteBookNegativeTest()");
 
 		// Creating a book with valid details
 		LinkedHashMap<String, Object> validBookMapBeforeDelete = DeleteBookTestCaseStrings.testCases.get("validBook");
