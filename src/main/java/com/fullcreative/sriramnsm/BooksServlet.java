@@ -27,20 +27,29 @@ public class BooksServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			if (BooksServletUtilities.isOneBook(request.getRequestURI())) {
-				String bookID = BooksServletUtilities.getBookKeyFromUri(request);
-				Map<String, Object> responseMap = new LinkedHashMap<>();
-				responseMap = BooksServletUtilities.getOneBook(bookID);
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+			if (BooksServletUtilities.isValidEndPoint(request.getRequestURI())) {
+				if (BooksServletUtilities.hasBookKey(request.getRequestURI())) {
+					String bookID = BooksServletUtilities.getBookKeyFromUri(request);
+					responseMap = BooksServletUtilities.getOneBook(bookID);
+					int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+					String responseAsJson = new Gson().toJson(responseMap);
+					response.setContentType("application/json");
+					response.getWriter().println(responseAsJson);
+					response.setStatus(code);
+				} else {
+					LinkedList<String> arrayOfBooks = BooksServletUtilities.getAllBooks();
+					response.setContentType("application/json");
+					response.getWriter().println(arrayOfBooks);
+					response.setStatus(200);
+				}
+			} else {
+				responseMap = BooksServletUtilities.invalidRequestEndpoint(responseMap);
 				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
 				String responseAsJson = new Gson().toJson(responseMap);
 				response.setContentType("application/json");
-				response.getWriter().println(responseAsJson);
+				response.getWriter().print(responseAsJson);
 				response.setStatus(code);
-			} else {
-				LinkedList<String> arrayOfBooks = BooksServletUtilities.getAllBooks();
-				response.setContentType("application/json");
-				response.getWriter().println(arrayOfBooks);
-				response.setStatus(200);
 			}
 		} catch (Exception e) {
 			System.out.println("Caught in doGet servlet service method");
@@ -62,24 +71,33 @@ public class BooksServlet extends HttpServlet {
 		}
 	}
 
-
 	/**
 	 * @AcceptedEndpoint /books
 	 * @ServiceMethodNote Creates a New Book Entity
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String jsonString = BooksServletUtilities.payloadAsStringFromRequest(request);
 			Map<String, Object> responseMap = new LinkedHashMap<>();
-			responseMap = BooksServletUtilities.createBook(jsonString);
-			int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
-			if (responseMap.containsKey("BOOK_ID")) {
-				String key = responseMap.remove("BOOK_ID").toString();
+			if (BooksServletUtilities.hasBookKey(request.getRequestURI()) == false
+					&& BooksServletUtilities.isValidEndPoint(request.getRequestURI())) {
+				String jsonString = BooksServletUtilities.payloadAsStringFromRequest(request);
+				responseMap = BooksServletUtilities.createBook(jsonString);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				if (responseMap.containsKey("BOOK_ID")) {
+					String key = responseMap.remove("BOOK_ID").toString();
+				}
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
+			} else {
+				responseMap = BooksServletUtilities.invalidRequestEndpoint(responseMap);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
 			}
-			String responseAsJson = new Gson().toJson(responseMap);
-			response.setContentType("application/json");
-			response.getWriter().print(responseAsJson);
-			response.setStatus(code);
 		} catch (Exception e) {
 			System.out.println("Caught in doPost servlet service method");
 			e.printStackTrace();
@@ -106,18 +124,29 @@ public class BooksServlet extends HttpServlet {
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String jsonString = BooksServletUtilities.payloadAsStringFromRequest(request);
-			String BookID = BooksServletUtilities.getBookKeyFromUri(request);
 			Map<String, Object> responseMap = new LinkedHashMap<>();
-			responseMap = BooksServletUtilities.updateBook(jsonString, BookID);
-			int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
-			if (responseMap.containsKey("BOOK_ID")) {
-				String key = responseMap.remove("BOOK_ID").toString();
+			if (BooksServletUtilities.hasBookKey(request.getRequestURI()) == true
+					&& BooksServletUtilities.isValidEndPoint(request.getRequestURI())) {
+				String jsonString = BooksServletUtilities.payloadAsStringFromRequest(request);
+				String BookID = BooksServletUtilities.getBookKeyFromUri(request);
+				responseMap = BooksServletUtilities.updateBook(jsonString, BookID);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				if (responseMap.containsKey("BOOK_ID")) {
+					String key = responseMap.remove("BOOK_ID").toString();
+				}
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
+			} else {
+				responseMap = BooksServletUtilities.invalidRequestEndpoint(responseMap);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
 			}
-			String responseAsJson = new Gson().toJson(responseMap);
-			response.setContentType("application/json");
-			response.getWriter().print(responseAsJson);
-			response.setStatus(code);
+
 		} catch (Exception e) {
 			System.out.println("Caught in doPut servlet service method");
 			e.printStackTrace();
@@ -141,17 +170,26 @@ public class BooksServlet extends HttpServlet {
 	 * @AcceptedEndpoint /books/{bookEntityID}
 	 * @ServiceMethodNote Deletes the book entity with ID = bookEntityID
 	 */
-
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String bookID = BooksServletUtilities.getBookKeyFromUri(request);
-			LinkedHashMap<String, Object> responseMap = new LinkedHashMap<>();
-			responseMap = BooksServletUtilities.deleteBook(bookID);
-			int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
-			String responseAsJson = new Gson().toJson(responseMap);
-			response.setContentType("application/json");
-			response.getWriter().print(responseAsJson);
-			response.setStatus(code);
+			Map<String, Object> responseMap = new LinkedHashMap<>();
+			if (BooksServletUtilities.hasBookKey(request.getRequestURI()) == true
+					&& BooksServletUtilities.isValidEndPoint(request.getRequestURI())) {
+				String bookID = BooksServletUtilities.getBookKeyFromUri(request);
+				responseMap = BooksServletUtilities.deleteBook(bookID);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
+			} else {
+				responseMap = BooksServletUtilities.invalidRequestEndpoint(responseMap);
+				int code = Integer.parseInt(responseMap.remove("STATUS_CODE").toString());
+				String responseAsJson = new Gson().toJson(responseMap);
+				response.setContentType("application/json");
+				response.getWriter().print(responseAsJson);
+				response.setStatus(code);
+			}
 		} catch (Exception e) {
 			System.out.println("Caught in doDelete servlet service method");
 			e.printStackTrace();

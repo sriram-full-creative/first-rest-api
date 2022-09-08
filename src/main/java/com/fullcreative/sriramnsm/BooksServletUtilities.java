@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -162,7 +163,7 @@ public class BooksServletUtilities {
 	 * @param uri
 	 * @return boolean
 	 */
-	public static boolean isOneBook(String uri) {
+	public static boolean hasBookKey(String uri) {
 		List<String> requestsArray = Arrays.asList(uri.split("/"));
 		Integer count = requestsArray.size();
 		if (count == 3) {
@@ -172,6 +173,15 @@ public class BooksServletUtilities {
 		}
 	}
 
+	public static boolean isValidEndPoint(String uri) {
+		List<String> requestsArray = Arrays.asList(uri.split("/"));
+		Integer count = requestsArray.size();
+		if (count == 3 || count == 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	/**
 	 * @param request
@@ -211,11 +221,13 @@ public class BooksServletUtilities {
 	public static LinkedHashMap<String, Object> requestBookValidator(BookData requestBookData,
 			LinkedHashMap<String, Object> errorMap) {
 		int flag = 0;
-		if (requestBookData.getTitle().length() <= 0 || requestBookData.getTitle() == null) {
+		if (requestBookData.getTitle().replaceAll(" ", "").length() == 0 || requestBookData.getTitle().length() <= 0
+				|| requestBookData.getTitle() == null) {
 			errorMap.put("TITLE_NAME_ERROR", "Title Name should contain atleast 1 character");
 			flag = 1;
 		}
-		if (requestBookData.getAuthor().length() <= 0 || requestBookData.getAuthor() == null) {
+		if (requestBookData.getAuthor().replaceAll(" ", "").length() == 0 || requestBookData.getAuthor().length() <= 0
+				|| requestBookData.getAuthor() == null) {
 			errorMap.put("AUTHOR_NAME_ERROR", "Author Name should contain atleast 1 character");
 			flag = 1;
 		}
@@ -237,11 +249,13 @@ public class BooksServletUtilities {
 					"Year should be less than or equal to the current year -> '" + Year.now().getValue() + "'");
 			flag = 1;
 		}
-		if (requestBookData.getLanguage().length() <= 0 || requestBookData.getLanguage() == null) {
+		if (requestBookData.getLanguage().replaceAll(" ", "").length() == 0
+				|| requestBookData.getLanguage().length() <= 0 || requestBookData.getLanguage() == null) {
 			errorMap.put("LANGUAGE_EMPTY_ERROR", "Language field can't be empty");
 			flag = 1;
 		}
-		if (requestBookData.getCountry().length() <= 3 || requestBookData.getCountry() == null) {
+		if (requestBookData.getCountry().replaceAll(" ", "").length() == 0 || requestBookData.getCountry().length() <= 3
+				|| requestBookData.getCountry() == null) {
 			errorMap.put("COUNTRY_FIELD_ERROR",
 					"Country field can't be empty and should atleast have 3 characters");
 			flag = 1;
@@ -398,6 +412,22 @@ public class BooksServletUtilities {
 			responseMap.put("ERROR", "Book not Found. Invalid Key");
 			responseMap.put("STATUS_CODE", 404);
 		}
+		return responseMap;
+	}
+
+	public static Map<String, Object> invalidRequestEndpoint(Map<String, Object> responseMap) {
+		/**
+		 * Status Code 422 means Unprocessable Entity The 422 (Unprocessable Entity)
+		 * status code means the server understands the content type of the request
+		 * entity (hence a 415 (Unsupported Media Type) status code is inappropriate),
+		 * and the syntax of the request entity is correct (thus a 400 (Bad Request)
+		 * status code is inappropriate) but was unable to process the contained
+		 * instructions. For example, this error condition may occur if an XML request
+		 * body contains well-formed (i.e., syntactically correct), but semantically
+		 * erroneous, XML instructions.
+		 */
+		responseMap.put("ERROR", "Invalid End Point");
+		responseMap.put("STATUS_CODE", 422);
 		return responseMap;
 	}
 
