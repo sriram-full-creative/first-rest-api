@@ -2,7 +2,7 @@ package com.fullcreative.sriramnsm;
 
 import com.google.gson.annotations.Expose;
 
-public class ResponseBookData {
+public class BookData {
 	@Expose(serialize = true, deserialize = true)
 	private String author;
 	@Expose(serialize = true, deserialize = true)
@@ -20,7 +20,7 @@ public class ResponseBookData {
 	@Expose(serialize = true, deserialize = true)
 	private int year;
 
-	public ResponseBookData() {
+	public BookData() {
 	};
 
 	public String getAuthor() {
@@ -92,5 +92,6 @@ public class ResponseBookData {
 		return "BookData [author=" + author + ", country=" + country + ", imageLink=" + imageLink + ", language="
 				+ language + ", link=" + link + ", pages=" + pages + ", title=" + title + ", year=" + year + "]";
 	}
+
 
 }
