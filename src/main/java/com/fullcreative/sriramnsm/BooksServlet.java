@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 @WebServlet(name = "BooksServlet", urlPatterns = { "/books", "/books/*" })
 public class BooksServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7365798110491894876L;
 	/**
 	 * @AcceptedEndpoint /books
 	 * @ServiceMethodNote Fetches all the Book entities
@@ -54,17 +54,9 @@ public class BooksServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Caught in doGet servlet service method");
 			e.printStackTrace();
-
-			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				{
-					put("500", "Something went wrong");
-				}
-			};
+			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>();
+			response.setContentType("application/json");
+			internalServerErrorMap.put("500", "Something went wrong");
 			String internalServerError = new Gson().toJson(internalServerErrorMap);
 			response.getWriter().println(internalServerError);
 			response.setStatus(500);
@@ -101,19 +93,13 @@ public class BooksServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Caught in doPost servlet service method");
 			e.printStackTrace();
-			response.setStatus(500);
-			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				{
-					put("500", "Something went wrong");
-				}
-			};
+			e.printStackTrace();
+			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>();
+			response.setContentType("application/json");
+			internalServerErrorMap.put("500", "Something went wrong");
 			String internalServerError = new Gson().toJson(internalServerErrorMap);
 			response.getWriter().println(internalServerError);
+			response.setStatus(500);
 		}
 	}
 
@@ -150,19 +136,12 @@ public class BooksServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Caught in doPut servlet service method");
 			e.printStackTrace();
-			response.setStatus(500);
-			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				{
-					put("500", "Something went wrong");
-				}
-			};
+			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>();
+			response.setContentType("application/json");
+			internalServerErrorMap.put("500", "Something went wrong");
 			String internalServerError = new Gson().toJson(internalServerErrorMap);
 			response.getWriter().println(internalServerError);
+			response.setStatus(500);
 		}
 	}
 	
@@ -193,19 +172,12 @@ public class BooksServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Caught in doDelete servlet service method");
 			e.printStackTrace();
-			response.setStatus(500);
-			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>() {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
-				{
-					put("500", "Something went wrong");
-				}
-			};
+			Map<String, String> internalServerErrorMap = new LinkedHashMap<String, String>();
+			response.setContentType("application/json");
+			internalServerErrorMap.put("500", "Something went wrong");
 			String internalServerError = new Gson().toJson(internalServerErrorMap);
 			response.getWriter().println(internalServerError);
+			response.setStatus(500);
 		}
 	}
 }
